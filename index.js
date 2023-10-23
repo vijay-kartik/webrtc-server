@@ -12,10 +12,6 @@ var privateKey = fs.readFileSync('server.key', 'utf8');
 var certificate = fs.readFileSync('server.crt', 'utf8');
 var credentials = { key: privateKey, cert: certificate };
 
-server.get("/", (req, res) => {
-    res.send("Hello");
-})
-
 var httpServer = https.createServer(credentials, server);
 
 var app = httpServer.listen(port, function() {
