@@ -99,12 +99,8 @@ webSocket.on('request',(req)=>{
                 users.splice(users.indexOf(user),1)
             }
         })
+        console.log("Connection closed");
     })
-
-
-
-
-
 })
 
 const findUser = username =>{
