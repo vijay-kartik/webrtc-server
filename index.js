@@ -1,38 +1,18 @@
-var os = require("os");
-var cors = require("cors");
-var nodeStatic = require("node-static");
 var socketIO = require("socket.io");
-var express = require("express");
-var https = require("https");
-var fs = require("fs");
-var server = express().use(cors());
-var port = process.env.PORT || 8080;
+var https = require("http");
+var port = process.env.PORT;
 
-var privateKey = fs.readFileSync('server.key', 'utf8');
-var certificate = fs.readFileSync('server.crt', 'utf8');
-var credentials = { key: privateKey, cert: certificate };
+// var privateKey = fs.readFileSync('server.key', 'utf8');
+// var certificate = fs.readFileSync('server.crt', 'utf8');
+// var credentials = { key: privateKey, cert: certificate };
 
-var httpServer = https.createServer(credentials, server);
-
-var app = httpServer.listen(port, function() {
-    console.log('Server listening on port ', port);
-}).on('error', function (error) {
-    if (error.code === 'EADDRINUSE') {
-        console.error('Current ${port} Address in use, retrying...');
-        setTimeout(() => {
-            app.close();
-            app.listen(port);
-        }, 1000);
-    }
-});
-
-var io = socketIO(app);
+var httpServer = https.createServer(() => {});
+var io = socketIO(httpServer, {});
 io.sockets.on('connection', function (socket) {
-    function log() {
+    function log(message) {
         var array = ['Message from server:'];
-        array.push.apply(array, arguments);
+        array.push.apply(array, message);
         socket.emit('log', array);
-
         console.log('chao', array);
     }
 
@@ -68,7 +48,7 @@ io.sockets.on('connection', function (socket) {
         var ifaces = on.networkInterfaces();
         for (var dev in ifaces) {
             ifaces[dev].forEach(function(details) {
-                if (details.family === 'IPv4' && details.address !== '127.0.0.1') {
+                if (details.family === 'IPv4') {
                     socket.emit('ipaddr', details.address);
                 }
             });
@@ -82,3 +62,14 @@ io.sockets.on('connection', function (socket) {
 
 });
 
+httpServer.listen(port, function() {
+    console.log('Server listening on port ', port);
+}).on('error', function (error) {
+    if (error.code === 'EADDRINUSE') {
+        console.error('Current ${port} Address in use, retrying...');
+        setTimeout(() => {
+            app.close();
+            app.listen(port);
+        }, 1000);
+    }
+});
