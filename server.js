@@ -99,6 +99,7 @@ webSocket.on('request',(req)=>{
                 users.splice(users.indexOf(user),1)
             }
         })
+        users.splice(0, users.length);
         console.log("Connection closed");
     })
 })
