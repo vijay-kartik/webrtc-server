@@ -1,4 +1,4 @@
-var socketIO = require("socket.io");
+const { Server } = require("socket.io");
 var https = require("http");
 var port = process.env.PORT;
 
@@ -7,7 +7,7 @@ var port = process.env.PORT;
 // var credentials = { key: privateKey, cert: certificate };
 
 var httpServer = https.createServer(() => {});
-var io = new socketIO(httpServer, {});
+var io = new Server(httpServer, {});
 io.on("connection", function (socket) {
     function log(message) {
         var array = ['Message from server:'];
