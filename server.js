@@ -6,12 +6,13 @@ server.listen(port,()=>{
     console.log("Server listening on port ", port);
 })
 
-const webSocket = new Socket({httpServer:server})
+const webSocket = new Socket({httpServer:server});
 
-const users = []
+const users = [];
 
 webSocket.on('request',(req)=>{
     const connection = req.accept();
+    console.log(req);
     
     connection.on('message',(message)=>{
         const data = JSON.parse(message.utf8Data)
